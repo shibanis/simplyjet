@@ -24,9 +24,14 @@ const writeData = (data: User[]) => {
   fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
 };
 
-export async function GET() {
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const page = Number(url.searchParams.get('page')) || 0;
+  const pageSize = Number(url.searchParams.get('pageSize')) || 10;
+  
   const users = readData();
-  return NextResponse.json(users);
+  const paginatedUsers = users.slice(page * pageSize, (page + 1) * pageSize);
+  return NextResponse.json({ users: paginatedUsers, total: users.length });
 }
 
 export async function POST(request: Request) {

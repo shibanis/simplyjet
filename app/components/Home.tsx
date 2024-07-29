@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useAnimation } from 'framer-motion';
+import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import Image from "next/legacy/image";
 import '../globals.css';
-
 
 // Function to split text into spans
 const splitTextIntoSpans = (text: string) => {
@@ -15,6 +14,7 @@ export default function Home() {
     const controls = useAnimation();
     const sectionRefs = useRef<Array<HTMLDivElement | null>>([]);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
     useEffect(() => {
         // Smooth scroll for all links
@@ -58,6 +58,11 @@ export default function Home() {
         };
     }, [controls]);
 
+    const menuItems = [
+        { label: 'Users', href: '/users' },
+        // Add more items as needed
+    ];
+
     return (
         <div className="relative">
             {/* Animated Background Image */}
@@ -96,18 +101,33 @@ export default function Home() {
                         <div className="menu-lines mt-1 w-6 h-0.5 bg-blue-dark"></div>
                         <div className="menu-lines mt-1 w-6 h-0.5 bg-blue-dark"></div>
                     </div>
-
                 </div>
             </header>
 
             {/* Full Page Menu */}
             {menuOpen && (
-                <div className="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-30">
+                <div className="fixed inset-0 bg-blue-light bg-opacity-90 flex items-center justify-center z-30">
                     <div className="bg-white p-8 rounded-lg shadow-lg w-full h-full flex flex-col items-center justify-center">
                         <ul className="text-center space-y-4">
-                            <li>
-                                <a href="#users" className="text-blue-600 text-2xl hover:underline">Users</a>
-                            </li>
+                            <AnimatePresence>
+                                {menuItems.map((item) => (
+                                    <motion.li
+                                        key={item.label}
+                                        initial={{ y: 10, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        exit={{ y: -10, opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        <a
+                                            href={item.href}
+                                            className="text-blue-dark text-bold text-2xl hover:underline"
+                                            onClick={() => setSelectedItem(item.label)}
+                                        >
+                                            {item.label}
+                                        </a>
+                                    </motion.li>
+                                ))}
+                            </AnimatePresence>
                         </ul>
                     </div>
                 </div>
@@ -125,7 +145,6 @@ export default function Home() {
                             {splitTextIntoSpans('SIMPLY JET')}
                         </motion.h1>
                     </div>
-
                 </header>
 
                 <main className="flex flex-col items-center justify-center p-8 text-center">

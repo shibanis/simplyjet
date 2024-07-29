@@ -6,6 +6,7 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  PaginationState,
 } from '@tanstack/react-table';
 
 // User Type
@@ -20,8 +21,8 @@ interface User {
 }
 
 // API Functions
-const fetchUsers = async (): Promise<User[]> => {
-  const res = await fetch('/api/users');
+const fetchUsers = async (page: number, pageSize: number): Promise<{ users: User[], total: number }> => {
+  const res = await fetch(`/api/users?page=${page}&pageSize=${pageSize}`);
   if (!res.ok) {
     throw new Error('Failed to fetch users');
   }
@@ -73,66 +74,23 @@ const deleteUser = async (id: string) => {
 // Column Helper
 const columnHelper = createColumnHelper<User>();
 
-const columns = [
-  columnHelper.accessor('first_name', {
-    cell: info => info.getValue(),
-    footer: info => info.column.id,
-    header: () => 'First Name',
-  }),
-  columnHelper.accessor('last_name', {
-    cell: info => <i>{info.getValue()}</i>,
-    footer: info => info.column.id,
-    header: () => 'Last Name',
-  }),
-  columnHelper.accessor('email', {
-    header: () => 'Email',
-    cell: info => info.getValue(),
-    footer: info => info.column.id,
-  }),
-  columnHelper.accessor('alternate_email', {
-    header: () => 'Alternate Email',
-    cell: info => info.getValue(),
-    footer: info => info.column.id,
-  }),
-  columnHelper.accessor('age', {
-    header: () => 'Age',
-    cell: info => info.renderValue(),
-    footer: info => info.column.id,
-  }),
-  columnHelper.accessor('id', {
-    header: 'Actions',
-    cell: ({ row }) => (
-      <div className="flex gap-2">
-        <button
-          onClick={() => {
-            setEditUser(row.original);
-            setIsEditing(true);
-          }}
-          className="bg-blue-dark text-white px-2 py-1 rounded hover:bg-blue-700"
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => {
-            deleteUserMutation.mutate(row.original.id);
-          }}
-          className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
-        >
-          Delete
-        </button>
-      </div>
-    ),
-    footer: info => info.column.id,
-  }),
-];
-
 // Main Component
 const UsersTab = () => {
   const queryClient = useQueryClient();
-  const { data: users = [], error, isLoading } = useQuery({
-    queryKey: ['users'],
-    queryFn: fetchUsers,
+  
+  const [pagination, setPagination] = React.useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
   });
+  
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['users', pagination],
+    queryFn: () => fetchUsers(pagination.pageIndex, pagination.pageSize),
+    keepPreviousData: true,
+  });
+  
+  const users = data?.users || [];
+  const total = data?.total || 0;
 
   const addUserMutation = useMutation({
     mutationFn: addUser,
@@ -149,6 +107,59 @@ const UsersTab = () => {
     onSuccess: () => queryClient.invalidateQueries(['users']),
   });
 
+  const columns = [
+    columnHelper.accessor('first_name', {
+      cell: info => info.getValue(),
+      footer: info => info.column.id,
+      header: () => 'First Name',
+    }),
+    columnHelper.accessor('last_name', {
+      cell: info => <i>{info.getValue()}</i>,
+      footer: info => info.column.id,
+      header: () => 'Last Name',
+    }),
+    columnHelper.accessor('email', {
+      header: () => 'Email',
+      cell: info => info.getValue(),
+      footer: info => info.column.id,
+    }),
+    columnHelper.accessor('alternate_email', {
+      header: () => 'Alternate Email',
+      cell: info => info.getValue(),
+      footer: info => info.column.id,
+    }),
+    columnHelper.accessor('age', {
+      header: () => 'Age',
+      cell: info => info.renderValue(),
+      footer: info => info.column.id,
+    }),
+    columnHelper.accessor('id', {
+      header: 'Actions',
+      cell: ({ row }) => (
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              setEditUser(row.original);
+              setIsEditing(true);
+            }}
+            className="bg-blue-dark text-white px-2 py-1 rounded hover:bg-blue-700"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => {
+              deleteUserMutation.mutate(row.original.id);
+            }}
+            className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
+          >
+            Delete
+          </button>
+        </div>
+      ),
+      footer: info => info.column.id,
+    }),
+  ];
+  
   const [newUser, setNewUser] = useState<Omit<User, 'id'>>({
     first_name: '',
     last_name: '',
@@ -194,7 +205,13 @@ const UsersTab = () => {
   const table = useReactTable({
     data: users,
     columns,
+    pageCount: Math.ceil(total / pagination.pageSize),
+    state: {
+      pagination,
+    },
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
   });
 
   if (isLoading) return 'Loading...';
@@ -263,9 +280,7 @@ const UsersTab = () => {
             <tr key={headerGroup.id}>
               {headerGroup.headers.map(header => (
                 <th key={header.id} className="border border-gray-300 p-2 bg-blue-100 text-left">
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </th>
               ))}
             </tr>
@@ -282,20 +297,30 @@ const UsersTab = () => {
             </tr>
           ))}
         </tbody>
-        <tfoot>
-          {table.getFooterGroups().map(footerGroup => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map(header => (
-                <th key={header.id} className="border border-gray-300 p-2 bg-blue-100">
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.footer, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
       </table>
+
+      <div className="pagination">
+        <button
+          className="border p-2"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </button>
+        <span className="mx-2">
+          Page{' '}
+          <strong>
+            {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          </strong>
+        </span>
+        <button
+          className="border p-2"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
