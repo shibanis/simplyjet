@@ -17,17 +17,51 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: #1882c2; /* Custom text color */
+  background: #073163; /* Custom background color */
 }
 
 @layer utilities {
   .text-balance {
-    text-wrap: balance;
+    text-wrap: balance; /* Custom utility class for text balance */
   }
+}
+
+.parallax {
+  background-image: url('/assets/private-aviation.jpg');
+  height: 100vh;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.parallax-caption {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  font-size: 4rem;
+  line-height: 1.2;
+}
+
+.parallax-caption span {
+  display: inline-block;
+  transition: transform 0.3s ease, font-size 0.3s ease;
+}
+
+.parallax-caption span:hover {
+  transform: scale(1.5);
+  font-size: 4.5rem;
+}
+
+.box {
+  background-color: #c0e0f3;
+  position: absolute;
+  z-index: 9999;
 }
