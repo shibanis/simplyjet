@@ -17,8 +17,8 @@
 }
 
 body {
-  color: #1882c2; /* Custom text color */
-  background: #073163; /* Custom background color */
+  color: #073163; /* Custom text color */
+  background:  #1882c2; /* Custom background color */
 }
 
 @layer utilities {
@@ -28,7 +28,7 @@ body {
 }
 
 .parallax {
-  background-image: url('/assets/private-aviation.jpg');
+  background: #1882c2; /* Custom background color */
   height: 100vh;
   background-attachment: fixed;
   background-size: cover;
@@ -40,12 +40,12 @@ body {
 }
 
 .parallax-caption {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  font-family: 'Six Caps', sans-serif;
+  font-weight: 500;
+  font-size: calc(1rem + 22.15vw);
+        line-height: calc(1rem + 20.5vw);
   text-align: center;
-  color: white;
+  color: #073163;
   font-size: 4rem;
   line-height: 1.2;
 }
@@ -61,7 +61,7 @@ body {
 }
 
 .box {
-  background-color: #c0e0f3;
+  background-color: #073163;
   position: absolute;
   z-index: 9999;
 }

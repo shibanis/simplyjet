@@ -34,7 +34,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({ onAnimationComplete }) => {
         ease: [0, 0.71, 0.2, 1.01]
       }}
       style={{
-        background: '#c0e0f3',
+        background: '#073163',
         position: 'absolute',
         top: '50%',
         zIndex: 9999

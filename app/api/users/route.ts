@@ -30,7 +30,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const newUser: User = { id: uuidv4(), ...await request.json() };
+  const newUser: User = { id: uuidv4(), ...(await request.json()) };
   const usersData = readData();
   usersData.push(newUser);
   writeData(usersData);

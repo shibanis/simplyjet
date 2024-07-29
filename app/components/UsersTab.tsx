@@ -108,7 +108,7 @@ const columns = [
             setEditUser(row.original);
             setIsEditing(true);
           }}
-          className="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+          className="bg-blue-dark text-white px-2 py-1 rounded hover:bg-blue-700"
         >
           Edit
         </button>
@@ -251,7 +251,7 @@ const UsersTab = () => {
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-dark text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           {isEditing ? 'Update User' : 'Add User'}
         </button>

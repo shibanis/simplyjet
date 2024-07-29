@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import '../globals.css';
 
 
@@ -80,20 +80,23 @@ export default function Home() {
             <header className="fixed top-0 left-0 w-full flex justify-between items-center p-4 bg-transparent text-white z-20">
                 <div className="ml-4">
                     <Image
-                        src="/assets/logo.png" // Path to your logo
+                        src="/assets/logo.svg" // Path to your logo
                         alt="Simply Jet"
                         width={120}
                         height={40}
                     />
                 </div>
                 <div
-                    className="menu-button cursor-pointer mr-4 flex flex-col items-center"
+                    className="menu-button cursor-pointer mr-4 flex items-center"
                     onClick={() => setMenuOpen(!menuOpen)}
                 >
-                    <span className="text-white text-lg">MENU</span>
-                    <div className="menu-lines mt-1 w-6 h-0.5 bg-white"></div>
-                    <div className="menu-lines mt-1 w-6 h-0.5 bg-white"></div>
-                    <div className="menu-lines mt-1 w-6 h-0.5 bg-white"></div>
+                    <span className="text-blue-dark text-lg mr-4">Menu</span>
+                    <div>
+                        <div className="menu-lines mt-1 w-6 h-0.5 bg-blue-dark"></div>
+                        <div className="menu-lines mt-1 w-6 h-0.5 bg-blue-dark"></div>
+                        <div className="menu-lines mt-1 w-6 h-0.5 bg-blue-dark"></div>
+                    </div>
+
                 </div>
             </header>
 
@@ -119,7 +122,7 @@ export default function Home() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 2, duration: 0.5 }}
                         >
-                            {splitTextIntoSpans('Welcome to Simply Jet')}
+                            {splitTextIntoSpans('SIMPLY JET')}
                         </motion.h1>
                     </div>
 
@@ -130,13 +133,13 @@ export default function Home() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 2.5 }}
-                        className="text-lg mb-8 text-white"
+                        className="text-lg mb-8 blue-dark"
                     >
                         We are a leading Swiss private aviation brokerage company, providing unparalleled service and innovative solutions in the private aviation industry.
                     </motion.p>
                     <a
                         href="#section1"
-                        className="inline-block px-6 py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+                        className="inline-block px-6 py-3 text-blue-dark text-lg font-semibold hover:bg-blue-dark transition duration-300"
                     >
                         Scroll to Explore
                     </a>
@@ -160,7 +163,7 @@ export default function Home() {
                     </p>
                     <a
                         href="#section2"
-                        className="inline-block px-6 py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+                        className="inline-block px-6 py-3 bg-blue-dark text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-dark transition duration-300"
                     >
                         Continue
                     </a>
@@ -181,7 +184,7 @@ export default function Home() {
                     </p>
                     <a
                         href="#footer"
-                        className="inline-block px-6 py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+                        className="inline-block px-6 py-3 bg-blue-dark text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-dark transition duration-300"
                     >
                         Finish
                     </a>
@@ -192,14 +195,14 @@ export default function Home() {
                     ref={el => sectionRefs.current[2] = el}
                     initial={{ opacity: 0, y: 50 }}
                     animate={controls}
-                    className="bg-blue-600 p-4 text-white text-center"
+                    className="bg-blue-dark p-4 text-white text-center"
                 >
                     <p>
                         © 2024 Simply Jet. All rights reserved.
                     </p>
                     <a
                         href="#welcome"
-                        className="inline-block mt-4 px-6 py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+                        className="inline-block mt-4 px-6 py-3 bg-blue-dark text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-dark transition duration-300"
                     >
                         Back to Top
                     </a>
