@@ -28,8 +28,24 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const page = Number(url.searchParams.get('page')) || 0;
   const pageSize = Number(url.searchParams.get('pageSize')) || 10;
+  const searchQuery = url.searchParams.get('search')?.toLowerCase() || '';
+  const minAge = Number(url.searchParams.get('minAge')) || 0;
+  const maxAge = Number(url.searchParams.get('maxAge')) || Infinity;
   
-  const users = readData();
+  let users = readData();
+  
+  // Filtering by age
+  users = users.filter(user => user.age >= minAge && user.age <= maxAge);
+  
+  // Searching by name or email
+  if (searchQuery) {
+    users = users.filter(user =>
+      user.first_name.toLowerCase().includes(searchQuery) ||
+      user.last_name.toLowerCase().includes(searchQuery) ||
+      user.email.toLowerCase().includes(searchQuery)
+    );
+  }
+  
   const paginatedUsers = users.slice(page * pageSize, (page + 1) * pageSize);
   return NextResponse.json({ users: paginatedUsers, total: users.length });
 }
@@ -52,8 +68,8 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const { id } = await request.json();
-  const filteredUsers = readData().filter(user => user.id !== id);
+  const { ids } = await request.json(); // Expecting an array of ids
+  const filteredUsers = readData().filter(user => !ids.includes(user.id));
   writeData(filteredUsers);
-  return NextResponse.json({ message: 'User deleted' });
+  return NextResponse.json({ message: 'Users deleted' });
 }

@@ -19,8 +19,8 @@ interface User {
   age: number;
 }
 
-const fetchUsers = async (page: number, pageSize: number): Promise<{ users: User[], total: number }> => {
-  const res = await fetch(`/api/users?page=${page}&pageSize=${pageSize}`);
+const fetchUsers = async (page: number, pageSize: number, search: string, minAge: number, maxAge: number): Promise<{ users: User[], total: number }> => {
+  const res = await fetch(`/api/users?page=${page}&pageSize=${pageSize}&search=${encodeURIComponent(search)}&minAge=${minAge}&maxAge=${maxAge}`);
   if (!res.ok) {
     throw new Error('Failed to fetch users');
   }
@@ -69,22 +69,41 @@ const deleteUser = async (id: string) => {
   return response.json();
 };
 
+const deleteSelectedUsers = async (ids: string[]) => {
+  const response = await fetch(`/api/users`, {
+    method: 'DELETE',
+    body: JSON.stringify({ ids }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete selected users');
+  }
+  return response.json();
+};
+
 const columnHelper = createColumnHelper<User>();
 
 const UsersTab = () => {
   const queryClient = useQueryClient();
-  
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
-  
+
+  const [search, setSearch] = useState('');
+  const [minAge, setMinAge] = useState<number | undefined>(undefined);
+  const [maxAge, setMaxAge] = useState<number | undefined>(undefined);
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
+
   const { data, error, isLoading } = useQuery({
-    queryKey: ['users', pagination],
-    queryFn: () => fetchUsers(pagination.pageIndex, pagination.pageSize),
+    queryKey: ['users', pagination, search, minAge, maxAge],
+    queryFn: () => fetchUsers(pagination.pageIndex, pagination.pageSize, search, minAge || 0, maxAge || 100),
     keepPreviousData: true,
   });
-  
+
   const users = data?.users || [];
   const total = data?.total || 0;
 
@@ -101,6 +120,14 @@ const UsersTab = () => {
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => queryClient.invalidateQueries(['users']),
+  });
+
+  const deleteSelectedUsersMutation = useMutation({
+    mutationFn: deleteSelectedUsers,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+      setSelectedUsers(new Set());
+    },
   });
 
   const columns = [
@@ -132,7 +159,7 @@ const UsersTab = () => {
     columnHelper.accessor('id', {
       header: 'Actions',
       cell: ({ row }) => (
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <button
             onClick={() => {
               setEditUser(row.original);
@@ -150,12 +177,25 @@ const UsersTab = () => {
           >
             Delete
           </button>
+          <input
+            type="checkbox"
+            checked={selectedUsers.has(row.original.id)}
+            onChange={() => {
+              const newSelectedUsers = new Set(selectedUsers);
+              if (selectedUsers.has(row.original.id)) {
+                newSelectedUsers.delete(row.original.id);
+              } else {
+                newSelectedUsers.add(row.original.id);
+              }
+              setSelectedUsers(newSelectedUsers);
+            }}
+          />
         </div>
       ),
       footer: info => info.column.id,
     }),
   ];
-  
+
   const [newUser, setNewUser] = useState<Omit<User, 'id'>>({
     first_name: '',
     last_name: '',
@@ -171,6 +211,7 @@ const UsersTab = () => {
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMessage(null);
     if (newUser.age <= 18) {
       setErrorMessage('Age must be greater than 18');
       return;
@@ -190,7 +231,6 @@ const UsersTab = () => {
       password: '',
       age: 0,
     });
-    setErrorMessage(null);
   };
 
   const table = useReactTable({
@@ -263,11 +303,48 @@ const UsersTab = () => {
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-dark text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           {isEditing ? 'Update User' : 'Add User'}
         </button>
       </form>
+
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border p-2 mb-2 w-full"
+        />
+        <div className="flex space-between">
+          <input
+            type="number"
+            placeholder="Min Age"
+            value={minAge === undefined ? '' : minAge}
+            onChange={(e) => setMinAge(e.target.value ? Number(e.target.value) : undefined)}
+            className="border p-2 mb-2 w-full mr-4"
+          />
+          <input
+            type="number"
+            placeholder="Max Age"
+            value={maxAge === undefined ? '' : maxAge}
+            onChange={(e) => setMaxAge(e.target.value ? Number(e.target.value) : undefined)}
+            className="border p-2 mb-2 w-full"
+          />
+        </div>
+
+      </div>
+
+      <button
+        onClick={() => {
+          deleteSelectedUsersMutation.mutate(Array.from(selectedUsers));
+        }}
+        className="bg-red-600 text-white px-4 py-2 rounded mb-4 hover:bg-red-700"
+        disabled={selectedUsers.size === 0}
+      >
+        Delete Selected Users
+      </button>
 
       <table className="min-w-full bg-white">
         <thead>
