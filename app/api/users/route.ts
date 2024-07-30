@@ -16,6 +16,9 @@ interface User {
 }
 
 const readData = (): User[] => {
+  if (!fs.existsSync(dataFilePath)) {
+    fs.writeFileSync(dataFilePath, JSON.stringify([])); // Create the file if it doesn't exist
+  }
   const jsonData = fs.readFileSync(dataFilePath, 'utf-8');
   return JSON.parse(jsonData);
 };
@@ -52,6 +55,12 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const newUser: User = { id: uuidv4(), ...(await request.json()) };
+  
+  // Validate required fields
+  if (!newUser.first_name || !newUser.last_name || !newUser.email || !newUser.age) {
+    return NextResponse.json({ message: 'Invalid user data' }, { status: 400 });
+  }
+
   const usersData = readData();
   usersData.push(newUser);
   writeData(usersData);
@@ -60,16 +69,53 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   const updatedUser: User = await request.json();
-  const updatedUsers = readData().map(user =>
-    user.id === updatedUser.id ? updatedUser : user
-  );
-  writeData(updatedUsers);
+  
+  // Validate required fields
+  if (!updatedUser.id || !updatedUser.first_name || !updatedUser.last_name || !updatedUser.email || !updatedUser.age) {
+    return NextResponse.json({ message: 'Invalid user data' }, { status: 400 });
+  }
+
+  const usersData = readData();
+  const userIndex = usersData.findIndex(user => user.id === updatedUser.id);
+  
+  if (userIndex === -1) {
+    return NextResponse.json({ message: 'User not found' }, { status: 404 });
+  }
+
+  usersData[userIndex] = updatedUser;
+  writeData(usersData);
   return NextResponse.json(updatedUser);
 }
 
 export async function DELETE(request: Request) {
-  const { ids } = await request.json(); // Expecting an array of ids
-  const filteredUsers = readData().filter(user => !ids.includes(user.id));
-  writeData(filteredUsers);
-  return NextResponse.json({ message: 'Users deleted' });
+  try {
+    const { ids } = await request.json();
+
+    // Normalize ids to always be an array of strings
+    let idArray: string[];
+
+    if (typeof ids === 'string') {
+      idArray = [ids];
+    } else if (Array.isArray(ids) && ids.every(id => typeof id === 'string')) {
+      idArray = ids;
+    } else {
+      return NextResponse.json({ message: 'Invalid input: ids must be an array of strings or a single string' }, { status: 400 });
+    }
+
+    const usersData = readData();
+    const filteredUsers = usersData.filter(user => !idArray.includes(user.id));
+
+    // Check if any users were deleted
+    if (filteredUsers.length === usersData.length) {
+      return NextResponse.json({ message: 'No users deleted' }, { status: 404 });
+    }
+
+    writeData(filteredUsers);
+    return NextResponse.json({ message: 'Users deleted' });
+  } catch (error) {
+    console.error('Error deleting users:', error);
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
+  }
 }
+
+

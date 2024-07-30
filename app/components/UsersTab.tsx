@@ -55,10 +55,10 @@ const updateUser = async (updatedUser: User) => {
   return response.json();
 };
 
-const deleteUser = async (id: string) => {
+const deleteUser = async (ids: string) => {
   const response = await fetch(`/api/users`, {
     method: 'DELETE',
-    body: JSON.stringify({ id }),
+    body: JSON.stringify({ ids }),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -100,8 +100,7 @@ const UsersTab = () => {
 
   const { data, error, isLoading } = useQuery({
     queryKey: ['users', pagination, search, minAge, maxAge],
-    queryFn: () => fetchUsers(pagination.pageIndex, pagination.pageSize, search, minAge || 0, maxAge || 100),
-    keepPreviousData: true,
+    queryFn: () => fetchUsers(pagination.pageIndex, pagination.pageSize, search, minAge || 0, maxAge || 100)
   });
 
   const users = data?.users || [];
@@ -109,23 +108,23 @@ const UsersTab = () => {
 
   const addUserMutation = useMutation({
     mutationFn: addUser,
-    onSuccess: () => queryClient.invalidateQueries(['users']),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] }),
   });
 
   const updateUserMutation = useMutation({
     mutationFn: updateUser,
-    onSuccess: () => queryClient.invalidateQueries(['users']),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] }),
   });
 
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
-    onSuccess: () => queryClient.invalidateQueries(['users']),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] }),
   });
 
   const deleteSelectedUsersMutation = useMutation({
     mutationFn: deleteSelectedUsers,
     onSuccess: () => {
-      queryClient.invalidateQueries(['users']);
+      queryClient.invalidateQueries({ queryKey: ['users'] });
       setSelectedUsers(new Set());
     },
   });
@@ -250,7 +249,7 @@ const UsersTab = () => {
 
   return (
     <div className="p-4 bg-blue-light">
-     
+
       <form onSubmit={handleFormSubmit} className="mb-4">
         <h2 className="text-2xl mb-2">{isEditing ? 'Edit User' : 'Add User'}</h2>
         {errorMessage && <div className="text-red-500 mb-2">{errorMessage}</div>}

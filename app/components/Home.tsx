@@ -19,10 +19,10 @@ export default function Home() {
     useEffect(() => {
         // Smooth scroll for all links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', (e: Event) => {
                 e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                document.getElementById(targetId)?.scrollIntoView({
+                const targetId = (anchor as HTMLAnchorElement).getAttribute('href')?.substring(1);
+                document.getElementById(targetId?? '')?.scrollIntoView({
                     behavior: 'smooth'
                 });
             });
@@ -176,7 +176,12 @@ export default function Home() {
             <div className="relative">
                 <motion.section
                     id="section1"
-                    ref={el => sectionRefs.current[0] = el}
+                    ref={(el: HTMLDivElement | null) => {
+                        // Ensure the ref callback does not return anything
+                        if (el) {
+                          sectionRefs.current[0] = el;
+                        }
+                      }}                    
                     initial={{ opacity: 0, y: 50 }}
                     animate={controls}
                     className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-gray-100"
@@ -197,7 +202,12 @@ export default function Home() {
 
                 <motion.section
                     id="section2"
-                    ref={el => sectionRefs.current[1] = el}
+                    ref={(el: HTMLDivElement | null) => {
+                        // Ensure the ref callback does not return anything
+                        if (el) {
+                          sectionRefs.current[1] = el;
+                        }
+                      }}
                     initial={{ opacity: 0, y: 50 }}
                     animate={controls}
                     className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-gray-200"
@@ -218,7 +228,12 @@ export default function Home() {
 
                 <motion.footer
                     id="footer"
-                    ref={el => sectionRefs.current[2] = el}
+                    ref={(el: HTMLDivElement | null) => {
+                        // Ensure the ref callback does not return anything
+                        if (el) {
+                          sectionRefs.current[2] = el;
+                        }
+                      }}
                     initial={{ opacity: 0, y: 50 }}
                     animate={controls}
                     className="bg-blue-dark p-4 text-white text-center"
