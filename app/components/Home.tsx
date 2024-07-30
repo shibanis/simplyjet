@@ -107,7 +107,14 @@ export default function Home() {
             {/* Full Page Menu */}
             {menuOpen && (
                 <div className="fixed inset-0 bg-blue-light bg-opacity-90 flex items-center justify-center z-30">
-                    <div className="bg-white p-8 rounded-lg shadow-lg w-full h-full flex flex-col items-center justify-center">
+                    <div className="relative bg-blue-light p-8 rounded-lg shadow-lg w-full h-full flex flex-col items-center justify-center">
+                        {/* Close Button */}
+                        <button
+                            className="absolute top-4 right-4 text-blue-dark text-lg font-bold"
+                            onClick={() => setMenuOpen(false)}
+                        >
+                            Close
+                        </button>
                         <ul className="text-center space-y-4">
                             <AnimatePresence>
                                 {menuItems.map((item) => (
@@ -147,7 +154,7 @@ export default function Home() {
                     </div>
                 </header>
 
-                <main className="flex flex-col items-center justify-center p-8 text-center">
+                <main className="flex flex-col items-center justify-center p-8 text-center relative">
                     <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -158,7 +165,7 @@ export default function Home() {
                     </motion.p>
                     <a
                         href="#section1"
-                        className="inline-block px-6 py-3 text-blue-dark text-lg font-semibold hover:bg-blue-dark transition duration-300"
+                        className="absolute top-48 left-4 inline-block px-6 py-3 text-blue-dark text-lg font-semibold transition duration-300"
                     >
                         Scroll to Explore
                     </a>

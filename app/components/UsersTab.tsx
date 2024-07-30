@@ -249,7 +249,8 @@ const UsersTab = () => {
   if (error) return 'An error occurred';
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-blue-light">
+     
       <form onSubmit={handleFormSubmit} className="mb-4">
         <h2 className="text-2xl mb-2">{isEditing ? 'Edit User' : 'Add User'}</h2>
         {errorMessage && <div className="text-red-500 mb-2">{errorMessage}</div>}
