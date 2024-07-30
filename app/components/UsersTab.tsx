@@ -9,7 +9,6 @@ import {
   PaginationState,
 } from '@tanstack/react-table';
 
-// User Type
 interface User {
   id: string;
   first_name: string;
@@ -20,7 +19,6 @@ interface User {
   age: number;
 }
 
-// API Functions
 const fetchUsers = async (page: number, pageSize: number): Promise<{ users: User[], total: number }> => {
   const res = await fetch(`/api/users?page=${page}&pageSize=${pageSize}`);
   if (!res.ok) {
@@ -71,14 +69,12 @@ const deleteUser = async (id: string) => {
   return response.json();
 };
 
-// Column Helper
 const columnHelper = createColumnHelper<User>();
 
-// Main Component
 const UsersTab = () => {
   const queryClient = useQueryClient();
   
-  const [pagination, setPagination] = React.useState<PaginationState>({
+  const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
@@ -166,40 +162,35 @@ const UsersTab = () => {
     email: '',
     alternate_email: '',
     password: '',
-    age: 18,
+    age: 0,
   });
 
   const [editUser, setEditUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleAddUser = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addUserMutation.mutate(newUser);
+    if (newUser.age <= 18) {
+      setErrorMessage('Age must be greater than 18');
+      return;
+    }
+    if (isEditing && editUser) {
+      updateUserMutation.mutate({ ...editUser, ...newUser });
+      setEditUser(null);
+      setIsEditing(false);
+    } else {
+      addUserMutation.mutate(newUser);
+    }
     setNewUser({
       first_name: '',
       last_name: '',
       email: '',
       alternate_email: '',
       password: '',
-      age: 18,
+      age: 0,
     });
-  };
-
-  const handleUpdateUser = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (editUser) {
-      updateUserMutation.mutate({ ...editUser, ...newUser });
-      setEditUser(null);
-      setIsEditing(false);
-      setNewUser({
-        first_name: '',
-        last_name: '',
-        email: '',
-        alternate_email: '',
-        password: '',
-        age: 18,
-      });
-    }
+    setErrorMessage(null);
   };
 
   const table = useReactTable({
@@ -219,78 +210,84 @@ const UsersTab = () => {
 
   return (
     <div className="p-4">
-      <form
-        onSubmit={isEditing ? handleUpdateUser : handleAddUser}
-        className="mb-4"
-      >
+      <form onSubmit={handleFormSubmit} className="mb-4">
         <h2 className="text-2xl mb-2">{isEditing ? 'Edit User' : 'Add User'}</h2>
+        {errorMessage && <div className="text-red-500 mb-2">{errorMessage}</div>}
         <input
           type="text"
           placeholder="First Name"
           value={newUser.first_name}
           onChange={(e) => setNewUser({ ...newUser, first_name: e.target.value })}
-          className="block mb-2 p-2 border border-gray-300 rounded"
+          className="border p-2 mb-2 w-full"
+          required
         />
         <input
           type="text"
           placeholder="Last Name"
           value={newUser.last_name}
           onChange={(e) => setNewUser({ ...newUser, last_name: e.target.value })}
-          className="block mb-2 p-2 border border-gray-300 rounded"
+          className="border p-2 mb-2 w-full"
+          required
         />
         <input
           type="email"
           placeholder="Email"
           value={newUser.email}
           onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-          className="block mb-2 p-2 border border-gray-300 rounded"
+          className="border p-2 mb-2 w-full"
+          required
         />
         <input
           type="email"
           placeholder="Alternate Email"
           value={newUser.alternate_email}
           onChange={(e) => setNewUser({ ...newUser, alternate_email: e.target.value })}
-          className="block mb-2 p-2 border border-gray-300 rounded"
+          className="border p-2 mb-2 w-full"
+          required
         />
         <input
           type="password"
           placeholder="Password"
           value={newUser.password}
           onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-          className="block mb-2 p-2 border border-gray-300 rounded"
+          className="border p-2 mb-2 w-full"
+          required
         />
         <input
           type="number"
           placeholder="Age"
-          value={newUser.age}
+          value={newUser.age === 0 ? '' : newUser.age}
           onChange={(e) => setNewUser({ ...newUser, age: Number(e.target.value) })}
-          className="block mb-2 p-2 border border-gray-300 rounded"
+          className="border p-2 mb-2 w-full"
+          required
         />
         <button
           type="submit"
-          className="bg-blue-dark text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           {isEditing ? 'Update User' : 'Add User'}
         </button>
       </form>
 
-      <table className="min-w-full border-collapse border border-gray-300 bg-white">
+      <table className="min-w-full bg-white">
         <thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <th key={header.id} className="border border-gray-300 p-2 bg-blue-100 text-left">
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
+          <tr>
+            {table.getHeaderGroups().map(headerGroup => (
+              <React.Fragment key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <th key={header.id} className="px-4 py-2 border">
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
+                ))}
+              </React.Fragment>
+            ))}
+          </tr>
         </thead>
         <tbody>
           {table.getRowModel().rows.map(row => (
             <tr key={row.id}>
               {row.getVisibleCells().map(cell => (
-                <td key={cell.id} className="border border-gray-300 p-2">
+                <td key={cell.id} className="px-4 py-2 border">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
@@ -298,23 +295,19 @@ const UsersTab = () => {
           ))}
         </tbody>
       </table>
-
-      <div className="pagination">
+      <div className="flex justify-between items-center mt-4">
         <button
-          className="border p-2"
+          className="bg-gray-300 text-gray-800 px-4 py-2 rounded"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
           Previous
         </button>
-        <span className="mx-2">
-          Page{' '}
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-          </strong>
+        <span>
+          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </span>
         <button
-          className="border p-2"
+          className="bg-gray-300 text-gray-800 px-4 py-2 rounded"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
