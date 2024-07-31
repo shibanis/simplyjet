@@ -18,6 +18,7 @@
 }
 
 body {
+  overflow: hidden;
   color: #073163; /* Custom text color */
   background:  #c0e0f3; /* Custom background color */
 }
