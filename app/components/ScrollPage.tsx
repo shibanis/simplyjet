@@ -4,9 +4,8 @@ import { useState, useRef } from 'react';
 import '../globals.css';
 import { projects } from './Sections';
 import Card from './Card';
-import { motion, useScroll, useAnimation, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, AnimatePresence } from 'framer-motion';
 import Image from "next/legacy/image";
-
 
 // Function to split text into spans
 const splitTextIntoSpans = (text: string) => {
@@ -16,7 +15,7 @@ const splitTextIntoSpans = (text: string) => {
 };
 
 export default function ScrollPage() {
-    const container = useRef(null);
+    const container = useRef<HTMLDivElement>(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
     const menuItems = [
@@ -24,12 +23,10 @@ export default function ScrollPage() {
         // Add more items as needed
     ];
     const { scrollYProgress } = useScroll({
-
         target: container,
+        offset: ['start start', 'end end'],
+    });
 
-        offset: ['start start', 'end end']
-
-    })
     return (
         <>
             {/* Transparent Header with Logo and Menu Button */}
@@ -55,7 +52,8 @@ export default function ScrollPage() {
                             style={{ display: 'inline-block' }}
                         >
                             MENU
-                        </motion.div></span>
+                        </motion.div>
+                    </span>
                     <div>
                         <div className="menu-lines mt-1 w-6 h-0.5 bg-blue-dark"></div>
                         <div className="menu-lines mt-1 w-6 h-0.5 bg-blue-dark"></div>
@@ -77,7 +75,7 @@ export default function ScrollPage() {
                         <ul className="text-center space-y-4">
                             <AnimatePresence>
                                 {menuItems.map((item) => (
-                                    <div style={{ height: '8em' }}>
+                                    <div style={{ height: '8em' }} key={item.label}>
                                         <motion.div
                                             initial={{ y: '100%' }}
                                             animate={{ y: '0%' }}
@@ -120,7 +118,7 @@ export default function ScrollPage() {
                         transition={{ delay: 0.5 }}
                         className="text-lg mb-8 blue-dark text-bold"
                     >
-                        WE ARE A LEADING SWISS PRIVATE AVIATION BROKERAGE COMPANY,PROVIDING UNPARALLELED SERVICE AND INNVOATIVE SOLUTIONS IN THE PRIVATE AVIATION INDUSTRY.
+                        WE ARE A LEADING SWISS PRIVATE AVIATION BROKERAGE COMPANY, PROVIDING UNPARALLELED SERVICE AND INNOVATIVE SOLUTIONS IN THE PRIVATE AVIATION INDUSTRY.
                     </motion.p>
                     <a
                         href="#section1"
@@ -131,19 +129,21 @@ export default function ScrollPage() {
                 </main>
             </div>
             <main ref={container} className="main" id="section1">
-
                 {
-
                     projects.map((project, i) => {
-
                         const targetScale = 1 - ((projects.length - i) * 0.1);
-
-                        return <Card key={`p_${i}`} i={i} {...project} progress={scrollYProgress} range={[i * .25, 1]} targetScale={targetScale} />
-
+                        return (
+                            <Card
+                                key={`p_${i}`}
+                                i={i}
+                                {...project}
+                                progress={scrollYProgress} // Pass the numeric value
+                                range={[i * 0.25, 1]}
+                                targetScale={targetScale}
+                            />
+                        );
                     })
-
                 }
-
             </main>
             <div className="grid place-items-center h-[60vh] w-full">
                 <h2 className="text-2xl mb-4">
@@ -152,7 +152,6 @@ export default function ScrollPage() {
                 <p className="text-lg mb-8">
                     Our commitment to excellence ensures that you receive the best service.
                 </p>
-
             </div>
 
             <motion.footer
@@ -171,8 +170,5 @@ export default function ScrollPage() {
                 </a>
             </motion.footer>
         </>
-
-
-    )
-
+    );
 }

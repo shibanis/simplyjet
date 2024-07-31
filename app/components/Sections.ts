@@ -10,7 +10,7 @@ export const projects = [
   
       link: "https://simply-jet.ch/en/private-air-charter",
   
-      color: "#BBACAF"
+      color: "#073163"
   
     },
   
@@ -24,7 +24,7 @@ export const projects = [
   
       link: "https://simply-jet.ch/en/helicopter-charter",
   
-      color: "#977F6D"
+      color: "#073163"
   
     },
   
@@ -38,7 +38,7 @@ export const projects = [
   
       link: "https://simply-jet.ch/en/group-charter-flights",
   
-      color: "#C2491D"
+      color: "#073163"
   
     }
   ]
