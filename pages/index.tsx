@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import LoadingPage from '../app/components/LoadingPage';
 import Home from '../app/components/Home';
+import ScrollPage from '../app/components/ScrollPage';
 
 const App: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -11,7 +12,7 @@ const App: React.FC = () => {
       {!isLoaded ? (
         <LoadingPage onAnimationComplete={() => setIsLoaded(true)} />
       ) : (
-        <Home />
+        <ScrollPage />
       )}
     </div>
   );

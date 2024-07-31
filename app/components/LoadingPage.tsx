@@ -52,7 +52,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({ onAnimationComplete }) => {
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 9999,
-            color: '#ffffff', // Adjust the color as needed
+            color: '#073163', // Adjust the color as needed
             fontSize: '16px'
           }}
         >

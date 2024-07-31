@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Six+Caps&display=swap');
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -18,7 +19,7 @@
 
 body {
   color: #073163; /* Custom text color */
-  background:  #1882c2; /* Custom background color */
+  background:  #c0e0f3; /* Custom background color */
 }
 
 @layer utilities {
@@ -28,7 +29,7 @@ body {
 }
 
 .parallax {
-  background: #1882c2; /* Custom background color */
+  background: #c0e0f3; /* Custom background color */
   height: 100vh;
   background-attachment: fixed;
   background-size: cover;
@@ -39,29 +40,113 @@ body {
   justify-content: center;
 }
 
+.menu-item{
+  font-family: 'Six Caps', sans-serif;
+  font-size: 6rem;
+}
+
 .parallax-caption {
   font-family: 'Six Caps', sans-serif;
   font-weight: 500;
-  font-size: calc(1rem + 22.15vw);
-        line-height: calc(1rem + 20.5vw);
+  font-size: 10rem;
+  line-height: calc(4rem + 20.5vw);
   text-align: center;
   color: #073163;
-  font-size: 4rem;
   line-height: 1.2;
+  height: 130px
 }
 
 .parallax-caption span {
   display: inline-block;
   transition: transform 0.3s ease, font-size 0.3s ease;
+  transform-origin: bottom; /* Makes the transform scaleY from the bottom */
 }
 
 .parallax-caption span:hover {
-  transform: scale(1.5);
-  font-size: 4.5rem;
+  transform: scaleY(1.5);
+  font-size: 8.5rem;
 }
 
 .box {
   background-color: #073163;
   position: absolute;
   z-index: 9999;
+}
+
+.main{
+  margin-top: 0vh;
+  margin-bottom: 0vh;
+
+}
+
+.cardContainer{
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 0px;
+  .card{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 500px;
+    width: 1200px;
+    border-radius: 25px;
+    transform-origin: top;
+    h2{
+      text-align: center;
+      margin: 0px;
+      font-size: 28px;
+    }
+    .body{
+      display: flex;
+      height: 100%;
+
+      .description{
+        color: white;
+        width: 40%;
+        position: absolute;
+        top: 50%;
+        left:30%;
+        p{
+          font-size: 16px;
+          &::first-letter{
+            font-size: 28px;
+            font-family: 'Title';
+          }
+        }
+        span{
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          a{
+            font-size: 12px;
+            text-decoration: underline;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .imageContainer{
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 25px;
+        overflow: hidden;
+        .inner{
+          width: 100%;
+          height: 100%;
+        }
+        img{
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}
+
+html {
+  --cursor-color: #333;
+  --inner-cursor-color: transparent;
 }
