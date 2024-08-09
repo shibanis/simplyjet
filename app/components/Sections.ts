@@ -20,7 +20,7 @@ export const projects = [
   
       description: "Hire a helicopter with Simply Jet and get closer to your final destination. Helicopters are perfectly suited to reach remote destinations, areas with no airport or places where your private jet can’t go",
   
-      src: "private-jet1.jpg",
+      src: "private-helicopter.jpg",
   
       link: "https://simply-jet.ch/en/helicopter-charter",
   

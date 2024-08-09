@@ -36,18 +36,22 @@ const Card: React.FC<CardProps> = ({ title, description, src, link, color, i, pr
 
     // Calculate blur value based on scrollYProgress
     useEffect(() => {
-        const unsubscribe = scrollYProgress.onChange(v => {
+        const unsubscribe = scale.onChange(v => {
             console.log('Scroll Progress for card:', v); // Debugging line
+            if (i !== 2) {
+                // Adjust the blur amount based on how much of the card is out of view
+                if (v > 0.96) {
+                    const blur = (1 - v) * 50; // Blur increases as the card scrolls out of view
+                    setBlurValue(blur);
+                }
+            }
 
-            // Adjust the blur amount based on how much of the card is out of view
-            const blur = (1 - v) * 10; // Blur increases as the card scrolls out of view
-            setBlurValue(blur);
         });
 
         return () => {
             unsubscribe();
         };
-    }, [scrollYProgress]);
+    }, [scale]);
 
     useEffect(() => {
         const lenis = new Lenis();
@@ -65,7 +69,7 @@ const Card: React.FC<CardProps> = ({ title, description, src, link, color, i, pr
                     filter: `blur(${blurValue}px)`, // Apply dynamic blur effect
                     backgroundColor: color,
                     scale,
-                    top: `calc(-5vh + ${i * 25}px)`
+                    top: `calc(-5vh + ${i+1 * 30}px)`
                 }}
                 className="card"
             >

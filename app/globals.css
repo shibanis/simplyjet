@@ -18,18 +18,22 @@
 }
 
 body {
-  color: #073163; /* Custom text color */
-  background:  #c0e0f3; /* Custom background color */
+  color: #073163;
+  /* Custom text color */
+  background: #c0e0f3;
+  /* Custom background color */
 }
 
 @layer utilities {
   .text-balance {
-    text-wrap: balance; /* Custom utility class for text balance */
+    text-wrap: balance;
+    /* Custom utility class for text balance */
   }
 }
 
 .parallax {
-  background: #c0e0f3; /* Custom background color */
+  background: #c0e0f3;
+  /* Custom background color */
   height: 100vh;
   background-attachment: fixed;
   background-size: cover;
@@ -40,9 +44,21 @@ body {
   justify-content: center;
 }
 
-.menu-item{
+.menu-item {
   font-family: 'Six Caps', sans-serif;
   font-size: 6rem;
+  color: #073163;
+  /* Initially all menu items are white */
+  transition: color 0.3s ease;
+}
+
+.menu-item.selected {
+  color: #073163;
+  /* Selected menu item stays white */
+}
+
+.menu-item.not-hovered {
+    color: grey; /* Other items turn grey when one item is hovered */
 }
 
 .parallax-caption {
@@ -59,7 +75,8 @@ body {
 .parallax-caption span {
   display: inline-block;
   transition: transform 0.3s ease, font-size 0.3s ease;
-  transform-origin: bottom; /* Makes the transform scaleY from the bottom */
+  transform-origin: bottom;
+  /* Makes the transform scaleY from the bottom */
 }
 
 .parallax-caption span:hover {
@@ -73,20 +90,21 @@ body {
   z-index: 9999;
 }
 
-.main{
+.main {
   margin-top: 0vh;
   margin-bottom: 0vh;
 
 }
 
-.cardContainer{
+.cardContainer {
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: sticky;
   top: 0px;
-  .card{
+
+  .card {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -94,33 +112,39 @@ body {
     width: 90%;
     border-radius: 25px;
     transform-origin: top;
-    h2{
+
+    h2 {
       text-align: center;
       margin: 0px;
       font-size: 28px;
     }
-    .body{
+
+    .body {
       display: flex;
       height: 100%;
 
-      .description{
+      .description {
         color: white;
         width: 40%;
         position: absolute;
         top: 50%;
-        left:30%;
-        p{
+        left: 30%;
+
+        p {
           font-size: 16px;
-          &::first-letter{
+
+          &::first-letter {
             font-size: 28px;
             font-family: 'Title';
           }
         }
-        span{
+
+        span {
           display: flex;
           align-items: center;
           gap: 5px;
-          a{
+
+          a {
             font-size: 12px;
             text-decoration: underline;
             cursor: pointer;
@@ -128,17 +152,19 @@ body {
         }
       }
 
-      .imageContainer{
+      .imageContainer {
         position: relative;
         width: 100%;
         height: 100%;
         border-radius: 25px;
         overflow: hidden;
-        .inner{
+
+        .inner {
           width: 100%;
           height: 100%;
         }
-        img{
+
+        img {
           object-fit: cover;
         }
       }
@@ -168,22 +194,26 @@ html {
   position: absolute;
   transform-origin: center;
   transition: transform 0.1s ease-out;
-  mix-blend-mode: difference; /* Optional: for visibility against various backgrounds */
+  mix-blend-mode: difference;
+  /* Optional: for visibility against various backgrounds */
 }
 
-.cursor.hovered {
-  border-color: red; /* Color change when hovered over a menu */
-}
+.cursor.hovered {}
 
 .cursor.card {
-  width: 80px; /* Double size when over card */
-  height: 80px; /* Double size when over card */
-  border: none; /* No border when over card */
-  background-color: rgba(0, 0, 255, 0.2); /* Translucent background for card */
+  width: 80px;
+  /* Double size when over card */
+  height: 80px;
+  /* Double size when over card */
+  border: none;
+  /* No border when over card */
+  background-color: rgba(0, 0, 255, 0.2);
+  /* Translucent background for card */
 }
 
 .cursor.sticky {
-  background-color: rgba(0, 255, 0, 0.2); /* Change cursor background when sticky */
+  background-color: rgba(159, 179, 223, 0.2);
+  /* Change cursor background when sticky */
   /* Optionally, add additional styles to emphasize sticky state */
 }
 

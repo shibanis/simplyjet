@@ -18,8 +18,13 @@ export default function ScrollPage() {
     const container = useRef<HTMLDivElement>(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
+    const [hoveredItem, setHoveredItem] = useState<string | null>(null);
     const menuItems = [
-        { label: 'Users', href: '/users' },
+        { label: 'USERS', href: '/users' },
+        { label: 'PORTFOLIO', href: '/users' },
+        { label: 'CONTACT', href: '/users' },
+        { label: 'STORIES', href: '/users' },
+        { label: 'MORE', href: '/users' },
         // Add more items as needed
     ];
     const { scrollYProgress } = useScroll({
@@ -61,42 +66,58 @@ export default function ScrollPage() {
                     </div>
                 </div>
             </header>
-            {/* Full Page Menu */}
-            {menuOpen && (
-                <div className="fixed inset-0 bg-blue-light bg-opacity-90 flex items-center justify-center z-30">
-                    <div className="relative bg-blue-light p-8 rounded-lg shadow-lg w-full h-full flex flex-col items-center justify-center">
-                        {/* Close Button */}
-                        <button
-                            className="absolute top-4 right-4 text-blue-dark text-lg font-bold"
-                            onClick={() => setMenuOpen(false)}
-                        >
-                            Close
-                        </button>
-                        <ul className="text-center space-y-4">
-                            <AnimatePresence>
-                                {menuItems.map((item) => (
+            <AnimatePresence>
+                {/* Full Page Menu */}
+
+                {menuOpen && (
+                    <div className="fixed inset-0 bg-blue-light bg-opacity-90 flex items-center justify-center z-30">
+                        <div className="relative bg-blue-light p-8 rounded-lg shadow-lg w-full h-full flex flex-col items-center justify-center">
+                            {/* Close Button */}
+                            <button
+                                className="absolute top-4 right-4 text-blue-dark text-lg font-bold"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                Close
+                            </button>
+                            <ul className="text-center space-y-4">
+                                {menuItems.map((item, index) => (
                                     <div style={{ height: '8em' }} key={item.label}>
                                         <motion.div
-                                            initial={{ y: '100%' }}
-                                            animate={{ y: '0%' }}
-                                            transition={{ duration: 0.5, ease: 'easeInOut' }}
+                                            initial={{ y: '100%', opacity: 0 }}
+                                            animate={{ y: '0%', opacity: 1 }}
+                                            exit={{ y: '-100%', opacity: 0 }}
+                                            transition={{
+                                                y: { duration: 0.2, delay: index * 0.1, ease: 'easeInOut' },
+                                                opacity: { duration: 0.3, delay: index * 0.1, ease: 'easeInOut' }
+                                            }}
+                                            whileHover={{
+                                                y: ['0%', '-100%', '0%'], // Move up quickly and reappear
+                                                opacity: [1, 0, 1], // Ensure item fades in and out
+                                                transition: {
+                                                    opacity: { duration: 0.3, ease: 'easeInOut' }, // Fade transition
+                                                    y: { duration: 0.6, ease: 'easeInOut' } // Move transition
+                                                }
+                                            }}
                                             style={{ display: 'inline-block' }}
                                         >
-                                            <a
+                                            <motion.a
                                                 href={item.href}
-                                                className="text-blue-dark text-bold text-2xl hover:underline menu-item"
-                                                onClick={() => setSelectedItem(item.label)}
+                                                className={`text-bold text-2xl menu-item ${hoveredItem === item.label ? 'hovered' : (hoveredItem !== null ? 'not-hovered' : '')}`}
+                                                onMouseEnter={() => { setHoveredItem(item.label); console.log("SHIBANIHOVERED", item.label) }}
+                                                onMouseLeave={() => setHoveredItem(null)}
                                             >
                                                 {item.label}
-                                            </a>
+                                            </motion.a>
                                         </motion.div>
                                     </div>
                                 ))}
-                            </AnimatePresence>
-                        </ul>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+
+            </AnimatePresence>
+
             {/* Welcome Content */}
             <div id="welcome" className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center bg-black bg-opacity-50 parallax">
                 <header className="p-4 text-white">
@@ -132,6 +153,7 @@ export default function ScrollPage() {
                 {
                     projects.map((project, i) => {
                         const targetScale = 1 - ((projects.length - i) * 0.1);
+                        console.log("SHIBANI", targetScale)
                         return (
                             <Card
                                 key={`p_${i}`}
