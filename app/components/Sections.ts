@@ -6,7 +6,7 @@ export const projects = [
   
       description: "We offer the best private jet services tailored to your needs",
   
-      src: "private-aviation.jpg",
+      src: "simplyjetcard1.jpg",
   
       link: "https://simply-jet.ch/en/private-air-charter",
   

@@ -1,29 +1,21 @@
 // pages/_app.tsx
-import React from 'react';
+import React,{useRef} from 'react';
 import { AppProps } from 'next/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '../app/globals.css'; // Adjust if necessary
-import AnimatedCursor from "react-animated-cursor"
+import GlobalCursor from '@/app/components/GlobalCursor';
 
 // Create a QueryClient instance
+/**
+ * A QueryClient instance is created, which will be used to manage caching, synchronization, and server state for your application.
+ */
 const queryClient = new QueryClient();
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
+    const stickyElement = useRef<HTMLDivElement | null>(null);
     return (
         <QueryClientProvider client={queryClient}>
-            <AnimatedCursor
-                innerSize={8}
-                outerSize={35}
-                innerScale={1}
-                outerScale={2}
-                outerAlpha={0}
-                innerStyle={{
-                    backgroundColor: 'var(--inner-cursor-color)',
-                }}
-                outerStyle={{
-                    border: '3px solid var(--cursor-color)',
-                }}
-            />
+                 <GlobalCursor />
             <Component {...pageProps} />
         </QueryClientProvider>
     );

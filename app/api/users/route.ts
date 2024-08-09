@@ -5,6 +5,9 @@ import path from 'path';
 
 const dataFilePath = path.join(process.cwd(), 'data', 'users.json');
 
+/**
+ * This file defines the API routes for managing user data. It includes endpoints to handle GET, POST, PUT, and DELETE requests. The user data is stored in a JSON file on the server.
+ */
 interface User {
   id: string;
   first_name: string;

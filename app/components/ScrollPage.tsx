@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import '../globals.css';
 import { projects } from './Sections';
 import Card from './Card';
-import { motion, useScroll, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, AnimatePresence, useCycle } from 'framer-motion';
 import Image from "next/legacy/image";
 
 // Function to split text into spans
@@ -40,7 +40,7 @@ export default function ScrollPage() {
                     />
                 </div>
                 <div
-                    className="menu-button cursor-pointer mr-4 flex items-center"
+                    className="menu menu-button cursor-pointer mr-4 flex items-center"
                     onClick={() => setMenuOpen(!menuOpen)}
                 >
                     <span className="text-blue-dark text-lg mr-4">

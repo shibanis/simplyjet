@@ -90,8 +90,8 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
-    height: 500px;
-    width: 1200px;
+    height: 80vh;
+    width: 90%;
     border-radius: 25px;
     transform-origin: top;
     h2{
@@ -149,4 +149,50 @@ body {
 html {
   --cursor-color: #333;
   --inner-cursor-color: transparent;
+}
+
+.cursorContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.cursor {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #073163;
+  background-color: transparent;
+  position: absolute;
+  transform-origin: center;
+  transition: transform 0.1s ease-out;
+  mix-blend-mode: difference; /* Optional: for visibility against various backgrounds */
+}
+
+.cursor.hovered {
+  border-color: red; /* Color change when hovered over a menu */
+}
+
+.cursor.card {
+  width: 80px; /* Double size when over card */
+  height: 80px; /* Double size when over card */
+  border: none; /* No border when over card */
+  background-color: rgba(0, 0, 255, 0.2); /* Translucent background for card */
+}
+
+.cursor.sticky {
+  background-color: rgba(0, 255, 0, 0.2); /* Change cursor background when sticky */
+  /* Optionally, add additional styles to emphasize sticky state */
+}
+
+.text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  color: #073163;
+  pointer-events: none;
 }
