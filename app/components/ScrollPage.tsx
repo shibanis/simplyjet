@@ -90,10 +90,10 @@ export default function ScrollPage() {
 
                 {menuOpen && (
                     <div className="fixed inset-0 top-[50px] bg-blue-light bg-opacity-90 flex items-center justify-center z-30">
-                        <div className="relative bg-blue-light p-8 rounded-lg shadow-lg w-full h-full flex flex-col items-center justify-center overflow-scroll">
-                            <ul className="text-center space-y-4 pt-[200px]">
+                        <div className="relative bg-blue-light p-8 rounded-lg shadow-lg w-full h-full flex flex-col items-center overflow-scroll">
+                            <ul className="text-center space-y-4 pt-[50px]">
                                 {menuItems.map((item, index) => (
-                                    <div style={{ height: '8em' }} key={item.label}>
+                                    <div key={item.label} className="menu-item-container">
                                         <motion.div
                                             initial={{ y: '100%', opacity: 0 }}
                                             animate={{ y: '0%', opacity: 1 }}
@@ -102,15 +102,20 @@ export default function ScrollPage() {
                                                 y: { duration: 0.2, delay: index * 0.1, ease: 'easeInOut' },
                                                 opacity: { duration: 0.3, delay: index * 0.1, ease: 'easeInOut' }
                                             }}
-                                            whileHover={{
-                                                y: ['0%', '-100%', '0%'], // Move up quickly and reappear
-                                                opacity: [1, 0, 1], // Ensure item fades in and out
-                                                transition: {
-                                                    opacity: { duration: 0.3, ease: 'easeInOut' }, // Fade transition
-                                                    y: { duration: 0.6, ease: 'easeInOut' } // Move transition
+                                            whileHover="hover"
+
+                                            variants={{
+                                                initial: { y: '0%' },
+                                                hover: {
+                                                    y: ['0%', '-100%', '0%'],
+                                                    opacity: [1, 0, 1],
+                                                    transition: {
+                                                        opacity: { duration: 0.3, ease: 'easeInOut' },
+                                                        y: { duration: 0.6, ease: 'easeInOut' },
+                                                    },
                                                 }
                                             }}
-                                            style={{ display: 'inline-block' }}
+                                            style={{ display: 'inline-block', marginTop: '30px' }}
                                         >
                                             <motion.a
                                                 href={item.href}
@@ -119,6 +124,17 @@ export default function ScrollPage() {
                                                 onMouseLeave={() => setHoveredItem(null)}
                                             >
                                                 {item.label}
+                                                <motion.div
+                                                    className="menu-item-cycle"
+                                                    initial={{ y: '100%', opacity: 0 }}
+                                                    whileHover={{
+                                                        y: '0%',
+                                                        opacity: 1,
+                                                        transition: { duration: 0.6, ease: 'easeInOut' },
+                                                    }}
+                                                >
+                                                    {item.label}
+                                                </motion.div>
                                             </motion.a>
                                         </motion.div>
                                     </div>
@@ -143,7 +159,6 @@ export default function ScrollPage() {
                         </motion.h1>
                     </div>
                 </header>
-
                 <main className="flex flex-col items-center justify-center p-8 text-center relative">
                     <motion.p
                         initial={{ opacity: 0 }}
@@ -153,13 +168,14 @@ export default function ScrollPage() {
                     >
                         WE ARE A LEADING SWISS PRIVATE AVIATION BROKERAGE COMPANY, PROVIDING UNPARALLELED SERVICE AND INNOVATIVE SOLUTIONS IN THE PRIVATE AVIATION INDUSTRY.
                     </motion.p>
-                    <a
-                        href="#section1"
-                        className="absolute top-48 left-4 inline-block px-6 py-3 text-blue-dark text-lg font-semibold transition duration-300"
-                    >
-                        Scroll to Explore
-                    </a>
+
                 </main>
+                <a
+                    href="#section1"
+                    className="absolute bottom-24 left-4 inline-block px-6 py-3 text-blue-dark text-lg font-semibold transition duration-300"
+                >
+                    Scroll to Explore
+                </a>
             </div>
             <main ref={container} className="main" id="section1">
                 {

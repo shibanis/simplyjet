@@ -37,10 +37,10 @@ const Card: React.FC<CardProps> = ({ title, description, src, link, color, i, pr
     // Calculate blur value based on scrollYProgress
     useEffect(() => {
         const unsubscribe = scale.onChange(v => {
-            console.log('Scroll Progress for card:', v); // Debugging line
             if (i !== 2) {
                 // Adjust the blur amount based on how much of the card is out of view
-                if (v > 0.96) {
+                if ((i=== 0 && v > 0.96) || (i==1 && v>0.98)) {
+                    console.log('Scroll Progress for card:', i,v); // Debugging line
                     const blur = (1 - v) * 50; // Blur increases as the card scrolls out of view
                     setBlurValue(blur);
                 }
