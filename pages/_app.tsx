@@ -15,7 +15,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
     const stickyElement = useRef<HTMLDivElement | null>(null);
     return (
         <QueryClientProvider client={queryClient}>
-                 <GlobalCursor />
+                <GlobalCursor />
             <Component {...pageProps} />
         </QueryClientProvider>
     );

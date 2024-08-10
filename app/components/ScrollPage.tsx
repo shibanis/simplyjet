@@ -19,13 +19,13 @@ export default function ScrollPage() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+    const body = document.body;
+
     const menuItems = [
         { label: 'USERS', href: '/users' },
         { label: 'PORTFOLIO', href: '/users' },
         { label: 'CONTACT', href: '/users' },
         { label: 'STORIES', href: '/users' },
-        { label: 'MORE', href: '/users' },
-        // Add more items as needed
     ];
     const { scrollYProgress } = useScroll({
         target: container,
@@ -46,8 +46,12 @@ export default function ScrollPage() {
                 </div>
                 <div
                     className="menu menu-button cursor-pointer mr-4 flex items-center"
-                    onClick={() => setMenuOpen(!menuOpen)}
+                    onClick={() => {
+                        setMenuOpen(!menuOpen);
+                        body.classList.add('no-scroll');
+                    }}
                 >
+
                     <span className="text-blue-dark text-lg mr-4">
                         <motion.div
                             whileHover="hover"
@@ -59,27 +63,35 @@ export default function ScrollPage() {
                             MENU
                         </motion.div>
                     </span>
-                    <div>
-                        <div className="menu-lines mt-1 w-6 h-0.5 bg-blue-dark"></div>
+                    {!menuOpen && <div>
                         <div className="menu-lines mt-1 w-6 h-0.5 bg-blue-dark"></div>
                         <div className="menu-lines mt-1 w-6 h-0.5 bg-blue-dark"></div>
                     </div>
+                    }
+                    {menuOpen && <button
+                        className="top-4 right-4 text-blue-dark text-lg font-bold flex"
+                        onClick={() => {
+                            setMenuOpen(false);
+                            body.classList.remove('no-scroll');
+                        }}
+                    >
+                        <Image
+                            src="/assets/close-icon.svg" // Path to your logo
+                            alt="Simply Jet"
+                            width={24}
+                            height={24}
+                        />
+                    </button>
+                    }
                 </div>
             </header>
             <AnimatePresence>
                 {/* Full Page Menu */}
 
                 {menuOpen && (
-                    <div className="fixed inset-0 bg-blue-light bg-opacity-90 flex items-center justify-center z-30">
-                        <div className="relative bg-blue-light p-8 rounded-lg shadow-lg w-full h-full flex flex-col items-center justify-center">
-                            {/* Close Button */}
-                            <button
-                                className="absolute top-4 right-4 text-blue-dark text-lg font-bold"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                Close
-                            </button>
-                            <ul className="text-center space-y-4">
+                    <div className="fixed inset-0 top-[50px] bg-blue-light bg-opacity-90 flex items-center justify-center z-30">
+                        <div className="relative bg-blue-light p-8 rounded-lg shadow-lg w-full h-full flex flex-col items-center justify-center overflow-scroll">
+                            <ul className="text-center space-y-4 pt-[200px]">
                                 {menuItems.map((item, index) => (
                                     <div style={{ height: '8em' }} key={item.label}>
                                         <motion.div

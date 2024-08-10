@@ -226,3 +226,7 @@ html {
   color: #073163;
   pointer-events: none;
 }
+
+.no-scroll{
+  overflow: hidden;
+}
