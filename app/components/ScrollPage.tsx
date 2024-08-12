@@ -107,10 +107,10 @@ export default function ScrollPage() {
                                             variants={{
                                                 initial: { y: '0%' },
                                                 hover: {
-                                                    y: ['0%', '-100%', '0%'],
-                                                    opacity: [1, 0, 1],
+                                                    y: [ '-100%',"-200%"],
+                                                    opacity: 1,
                                                     transition: {
-                                                        opacity: { duration: 0.3, ease: 'easeInOut' },
+                                                        opacity: { duration: 0.9, ease: 'easeInOut' },
                                                         y: { duration: 0.6, ease: 'easeInOut' },
                                                     },
                                                 }
@@ -126,9 +126,9 @@ export default function ScrollPage() {
                                                 {item.label}
                                                 <motion.div
                                                     className="menu-item-cycle"
-                                                    initial={{ y: '100%', opacity: 0 }}
+                                                    initial={{ y: '200%', opacity: 1 }}
                                                     whileHover={{
-                                                        y: '0%',
+                                                        y: '170%',
                                                         opacity: 1,
                                                         transition: { duration: 0.6, ease: 'easeInOut' },
                                                     }}
