@@ -21,7 +21,7 @@ export default function ScrollPage() {
     const container = useRef(null);
     const [showSlowHeader,setSlowHeader]=useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [hoveredItem, setHoveredItem] = useState(null);
+    const [hoveredItem, setHoveredItem] = useState<string | null>(null);
     const body = document.body;
     useEffect(() => {
         const handleScroll = () => {
