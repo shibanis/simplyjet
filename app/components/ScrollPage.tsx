@@ -16,10 +16,10 @@ const splitTextIntoSpans = (text: string) => {
 };
 
 export default function ScrollPage() {
-    const itemsRef = useRef<HTMLElement[]>([]);
+    const itemsRef = useRef<(HTMLLIElement | null)[]>([]);
     const observer = useRef(null);
     const container = useRef(null);
-    const [showSlowHeader,setSlowHeader]=useState(false);
+    const [showSlowHeader, setSlowHeader] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
     const body = document.body;
@@ -30,15 +30,17 @@ export default function ScrollPage() {
             setSlowHeader(false);
 
             itemsRef.current.forEach(item => {
-                const itemTop = item.getBoundingClientRect().top;
-                const itemBottom = item.getBoundingClientRect().bottom;
-                const itemCenter = (itemTop + itemBottom) / 2;
-                // Change color when the item's center crosses the viewport midpoint
-                if (itemCenter <= viewportMidpoint) {
-                    item.style.color = '#073163'; // Blue color
-                    setSlowHeader(true);
-                } else {
-                    item.style.color = 'grey'; // Grey color
+                if (item) { // Check if item is not null
+                    const itemTop = item.getBoundingClientRect().top;
+                    const itemBottom = item.getBoundingClientRect().bottom;
+                    const itemCenter = (itemTop + itemBottom) / 2;
+                    // Change color when the item's center crosses the viewport midpoint
+                    if (itemCenter <= viewportMidpoint) {
+                        item.style.color = '#073163'; // Blue color
+                        setSlowHeader(true);
+                    } else {
+                        item.style.color = 'grey'; // Grey color
+                    }
                 }
             });
         };
@@ -65,6 +67,10 @@ export default function ScrollPage() {
         target: container,
         offset: ['start start', 'end end'],
     });
+    // Ref setter function that does not return anything
+    const setRef = (index: number) => (el: HTMLLIElement | null) => {
+        itemsRef.current[index] = el;
+    };
 
     return (
         <>
@@ -223,7 +229,7 @@ export default function ScrollPage() {
                             {["WEB DESIGN", "MOBILE APP DEVELOPMENT", "UI/UX DESIGN", "SEO OPTIMISATION", "SOCIAL MEDIA MANAGEMENT"].map((item, index) => (
                                 <li
                                     key={index}
-                                    ref={el => itemsRef.current[index] = el}
+                                    ref={setRef(index)}
                                     style={{ color: 'grey' }} // Initial color
                                 >
                                     {item}
