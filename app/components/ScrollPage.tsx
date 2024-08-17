@@ -9,7 +9,7 @@ import Image from "next/legacy/image";
 import { Parallax } from 'react-scroll-parallax';
 
 // Function to split text into spans
-const splitTextIntoSpans = (text) => {
+const splitTextIntoSpans = (text: string) => {
     return text.split('').map((char, index) => (
         <span key={index}>{char}</span>
     ));
