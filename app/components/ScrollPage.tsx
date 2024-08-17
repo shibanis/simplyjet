@@ -16,7 +16,7 @@ const splitTextIntoSpans = (text: string) => {
 };
 
 export default function ScrollPage() {
-    const itemsRef = useRef([]);
+    const itemsRef = useRef<HTMLElement[]>([]);
     const observer = useRef(null);
     const container = useRef(null);
     const [showSlowHeader,setSlowHeader]=useState(false);
